@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include "main.h"
 
 /*
  * Task 1 in 0x0A. C - argc, argv
