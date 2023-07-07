@@ -1,10 +1,16 @@
 #include <stdio.h>
-#include "main.h"
 #include <stdlib.h>
 
 /*
  * Task 3 in 0x0A. C - argc, argv
  * Purpose : multiplies two numbers "arguments"
+ */
+
+/**
+ * _atoi - converts a string to an integer
+ * @s: string to be converted
+ *
+ * Return: the int converted from the string
  */
 
 /**
