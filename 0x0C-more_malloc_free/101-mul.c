@@ -1,105 +1,101 @@
 #include "main.h"
-#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#include <stdio.h>
+
+#define ERR_MSG "Error"
 
 /**
- * larger_num - get larger num
- * @n1: n1
- * @n2: n2
- * Return: larger index.
+ * is_digit - checks if a string contains a non-digit char
+ * @s: string to be evaluated
+ *
+ * Return: 0 if a non-digit is found, 1 otherwise
  */
-
-int larger_num(char *n1, char *n2)
+int is_digit(char *s)
 {
-	int l1, l2;
+	int i = 0;
 
-	l1 = strlen(n1);
-	l2 = strlen(n2);
-	/*missing cases like 001 19*/
-	if (l1 > l2)
-		return (1);
-	else if (l1 < l2)
-		return (2);
-	else if ((*n1 == '\0') && (*n2 == '\0'))
+	while (s[i])
 	{
-		return (1);
-	}
-	else if ((*n1 != '\0') && (*n2 != '\0'))
-	{
-		if (*n1 >= *n2)
-			return (1);
-		if (*n1 < *n2)
-			return (2);
-	}
-	return ((larger_num(n1++, n2++)));
-}
-
-/**
- * is_number - is it number
- * @n: n1
- * Return: 1 ture or 0 false
- */
-
-int is_number(char *n)
-{
-	while (*n)
-	{
-		if (!((*n >= '0') && (*n <= '9')))
+		if (s[i] < '0' || s[i] > '9')
 			return (0);
-		n++;
+		i++;
 	}
 	return (1);
 }
 
 /**
- * mul_number - get larger num
- * @n1: n1
- * @n2: n2
- * Return: larger index.
+ * _strlen - returns the length of a string
+ * @s: string to evaluate
+ *
+ * Return: the length of the string
  */
-
-char *mul_number(char *n1, char *n2)
+int _strlen(char *s)
 {
-	char **v;
+	int i = 0;
 
-	(void) v;
-	(void) n1;
-	(void) n2;
-	return (NULL);
+	while (s[i] != '\0')
+	{
+		i++;
+	}
+	return (i);
 }
 
 /**
- * main - multiplies two numbers "arguments"
- * @argc: argument count
- * @argv: argument vector
- * Return: (0) success or (1) faild
+ * errors - handles errors for main
  */
+void errors(void)
+{
+	printf("Error\n");
+	exit(98);
+}
 
+/**
+ * main - multiplies two positive numbers
+ * @argc: number of arguments
+ * @argv: array of arguments
+ *
+ * Return: always 0 (Success)
+ */
 int main(int argc, char *argv[])
 {
-	int larger, isNumbers;
-	char *total;
+	char *s1, *s2;
+	int len1, len2, len, i, carry, digit1, digit2, *result, a = 0;
 
-	(void) total;
-	if (argc != 3)
+	s1 = argv[1], s2 = argv[2];
+	if (argc != 3 || !is_digit(s1) || !is_digit(s2))
+		errors();
+	len1 = _strlen(s1);
+	len2 = _strlen(s2);
+	len = len1 + len2 + 1;
+	result = malloc(sizeof(int) * len);
+	if (!result)
+		return (1);
+	for (i = 0; i <= len1 + len2; i++)
+		result[i] = 0;
+	for (len1 = len1 - 1; len1 >= 0; len1--)
 	{
-		printf("Error\n");
-		exit(98);
+		digit1 = s1[len1] - '0';
+		carry = 0;
+		for (len2 = _strlen(s2) - 1; len2 >= 0; len2--)
+		{
+			digit2 = s2[len2] - '0';
+			carry += result[len1 + len2 + 1] + (digit1 * digit2);
+			result[len1 + len2 + 1] = carry % 10;
+			carry /= 10;
+		}
+		if (carry > 0)
+			result[len1 + len2 + 1] += carry;
 	}
-	isNumbers = is_number(argv[1]) +  is_number(argv[1]);
-	if (isNumbers != 2)
+	for (i = 0; i < len - 1; i++)
 	{
-		printf("Error\n");
-		exit(98);
+		if (result[i])
+			a = 1;
+		if (a)
+			_putchar(result[i] + '0');
 	}
-	larger = larger_num(argv[1], argv[2]);
-
-	if (larger == 1)
-		total = mul_number(argv[1], argv[2]);
-	else
-		total = mul_number(argv[2], argv[1]);
-
-	printf("%lu\n", (atol(argv[1]) * atol(argv[2])));
+	if (!a)
+		_putchar('0');
+	_putchar('\n');
+	free(result);
 	return (0);
 }
