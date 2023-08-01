@@ -1,32 +1,34 @@
-/*
- * 0x13. C - More singly linked lists
- * task Adv 4
- */
 #include "lists.h"
+
 /**
- * find_listint_loop - function that finds the loop in a linked list.
+ * find_listint_loop - finds the loop in a linked list
+ * @head: linked list to search for
  *
- * @head: printer
- *
- * Return: address
+ * Return: address of the node where the loop starts, or NULL
  */
 listint_t *find_listint_loop(listint_t *head)
 {
-	listint_t *p, *e;
+	listint_t *slow = head;
+	listint_t *fast = head;
 
-	if (head == NULL)
+	if (!head)
 		return (NULL);
-	for (e = head->next; e != NULL; e = e->next)
+
+	while (slow && fast && fast->next)
 	{
-		if (e == e->next)
+		fast = fast->next->next;
+		slow = slow->next;
+		if (fast == slow)
 		{
-			return (e);
-		}
-		for (p = head; p != e; p = p->next)
-		{
-			if (p == e->next)
-				return (e->next);
+			slow = head;
+			while (slow != fast)
+			{
+				slow = slow->next;
+				fast = fast->next;
+			}
+			return (fast);
 		}
 	}
+
 	return (NULL);
 }
