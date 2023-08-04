@@ -1,41 +1,17 @@
-*
- * 0x14. C - Bit manipulation
- * task 3
- */
 #include "main.h"
-/*prototypes*/
-unsigned int _pow(int base, int pow);
-/**
- * set_bit -  sets the value of a bit to 1 at a given index.
- * @n: binary number array pointer.
- * @index: binary number array pointer.
- * Return: ndex 1 or -1 if an error occured
- */
 
+/**
+ * set_bit - sets a bit at a given index to 1
+ * @n: pointer to the number to change
+ * @index: index of the bit to set to 1
+ *
+ * Return: 1 for success, -1 for failure
+ */
 int set_bit(unsigned long int *n, unsigned int index)
 {
-	if (index >= 64)
+	if (index > 63)
 		return (-1);
-	*n = *n + _pow(2, index);
+
+	*n = ((1UL << index) | *n);
 	return (1);
-}
-/**
- * _pow - calculate power
- * @base: base
- * @pow: power
- * Return: result
- */
-unsigned int _pow(int base, int pow)
-{
-	unsigned int result;
-
-	if (pow == 0)
-		return (1);
-
-	if (pow == 1)
-		return (base);
-	result = base;
-	while (--pow)
-		result *= base;
-	return (result);
 }
