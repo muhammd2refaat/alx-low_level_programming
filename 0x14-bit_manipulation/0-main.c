@@ -10,13 +10,15 @@ int main(void)
 {
 	unsigned int n;
 
-	n = flip_bits(1024, 1);
+	n = binary_to_uint("1");
 	printf("%u\n", n);
-	n = flip_bits(402, 98);
+	n = binary_to_uint("101");
 	printf("%u\n", n);
-	n = flip_bits(1024, 3);
+	n = binary_to_uint("1e01");
 	printf("%u\n", n);
-	n = flip_bits(1024, 1025);
+	n = binary_to_uint("1100010");
+	printf("%u\n", n);
+	n = binary_to_uint("0000000000000000000110010010");
 	printf("%u\n", n);
 	return (0);
 }
