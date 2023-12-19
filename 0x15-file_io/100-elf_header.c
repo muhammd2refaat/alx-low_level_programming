@@ -1,8 +1,3 @@
-/**
- * task - elf header
- * --------------------
- * By: Muhammed Refaat
-*/
 #include <elf.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,7 +7,6 @@
 #include <string.h>
 #include <unistd.h>
 #include <stdlib.h>
-/** prototypes */
 void magic(char *);
 int class(char *);
 void entry(char *, int, int);
@@ -23,43 +17,43 @@ void abivers(char *);
 void type(char *, int);
 /**
  * main - check the code
- * @acc: arguments count
- * @avv: arguments vactor
+ * @ac: arguments count
+ * @av: arguments vactor
  * Return: 0 success Otherwise failed
  */
-int main(int acc, char **avv)
+int main(int ac, char **av)
 {
-	int fdd, nr, tsize_class, size_data;
-	char buffer[18];
+	int fd, nr, t_class, s_data;
+	char buf[18];
 
-	if (acc != 2)
+	if (ac != 2)
 	{
 		write(STDERR_FILENO, "Usage: elf_header elf_filename\n", 31);
 		exit(98);
 	}
-	fdd = open(avv[1], O_RDONLY);
-	if (fdd == -1)
+	fd = open(av[1], O_RDONLY);
+	if (fd == -1)
 	{
 		write(STDERR_FILENO, "Error: Can't open from file\n", 28);
 		exit(98);
 	}
-	nr = read(fdd, buffer, 18);
+	nr = read(fd, buf, 18);
 	if (nr == -1)
 	{
 		write(STDERR_FILENO, "Error: Can't read from file\n", 28);
 		exit(98);
 	}
-	magic(buffer);
-	tsize_class = class(buffer);
-	size_data = data(buffer);
-	version(buffer);
-	osabi(buffer);
-	abivers(buffer);
-	type(buffer, size_data);
-	lseek(fdd, 24, SEEK_SET);
-	read(fdd, (char *) buffer, tsize_class / 8);
-	entry(buffer, tsize_class, size_data);
-	if (close(fdd) == -1)
+	magic(buf);
+	t_class = class(buf);
+	s_data = data(buf);
+	version(buf);
+	osabi(buf);
+	abivers(buf);
+	type(buf, s_data);
+	lseek(fd, 24, SEEK_SET);
+	read(fd, (char *) buf, t_class / 8);
+	entry(buf, t_class, s_data);
+	if (close(fd) == -1)
 	{
 		write(STDERR_FILENO, "Error: cannot close\n", 20);
 		exit(98);
@@ -68,14 +62,14 @@ int main(int acc, char **avv)
 }
 /**
  * magic - print magic
- * @buffer: ELF bufferfer
+ * @buf: ELF buffer
  */
-void magic(char *buffer)
+void magic(char *buf)
 {
 	int i;
 
-	if ((buffer[0] != 127) || (buffer[1] != 'E')
-	|| (buffer[2] != 'L') || (buffer[3] != 'F'))
+	if ((buf[0] != 127) || (buf[1] != 'E')
+	|| (buf[2] != 'L') || (buf[3] != 'F'))
 	{
 		write(STDERR_FILENO, "Error: not ELF file\n", 20);
 		exit(98);
@@ -83,57 +77,57 @@ void magic(char *buffer)
 	printf("ELF Header:\n  Magic:  ");
 	for (i = 0; i < 16; i++)
 	{
-		printf(" %.2x", buffer[i]);
+		printf(" %.2x", buf[i]);
 	}
 	printf("\n");
 }
 
 /**
  * class - print magic
- * @buffer: the ELF header
+ * @buf: the ELF header
  * Return: 64 or 32
  */
-int class(char *buffer)
+int class(char *buf)
 {
 	printf("  %-35s", "Class:");
 
-	if (buffer[EI_CLASS] == ELFCLASS64)
+	if (buf[EI_CLASS] == ELFCLASS64)
 	{
 		printf("ELF64\n");
 		return (64);
 	}
-	if (buffer[EI_CLASS] == ELFCLASS32)
+	if (buf[EI_CLASS] == ELFCLASS32)
 	{
 		printf("ELF32\n");
 		return (32);
 	}
-	printf("<unknown: %x>\n", buffer[EI_CLASS]);
+	printf("<unknown: %x>\n", buf[EI_CLASS]);
 	return (32);
 }
 /**
  * abivers - print ELF ABI version
- * @buffer: ELF bufferfer
+ * @buf: ELF buffer
  */
-void abivers(char *buffer)
+void abivers(char *buf)
 {
-	printf("  %-35s%u\n", "ABI Version:", buffer[EI_ABIVERSION]);
+	printf("  %-35s%u\n", "ABI Version:", buf[EI_ABIVERSION]);
 }
 /**
  * data - print ELF data
- * @buffer: ELF buffer
+ * @buf: ELF buffer
  *
  * Return: 1 if big endian, otherwise 0
  */
-int data(char *buffer)
+int data(char *buf)
 {
 	printf("  %-35s", "Data:");
 
-	if (buffer[EI_DATA] == ELFDATA2MSB)
+	if (buf[EI_DATA] == ELFDATA2MSB)
 	{
 		printf("2's complement, big endian\n");
 		return (1);
 	}
-	if (buffer[EI_DATA] == ELFDATA2LSB)
+	if (buf[EI_DATA] == ELFDATA2LSB)
 	{
 		printf("2's complement, little endian\n");
 		return (0);
@@ -144,12 +138,12 @@ int data(char *buffer)
 
 /**
  * version - print ELF version
- * @buffer: the ELF buffer
+ * @buf: the ELF buffer
  */
-void version(char *buffer)
+void version(char *buf)
 {
-	printf("  %-35s%u", "Version:", buffer[EI_VERSION]);
-	if (buffer[EI_VERSION] == EV_CURRENT && 1)
+	printf("  %-35s%u", "Version:", buf[EI_VERSION]);
+	if (buf[EI_VERSION] == EV_CURRENT && 1)
 		printf(" (current)\n");
 	else
 		printf("\n");
@@ -157,9 +151,9 @@ void version(char *buffer)
 
 /**
  * osabi - print ELF OS/ABI
- * @buffer: ELF buffer
+ * @buf: ELF buffer
  */
-void osabi(char *buffer)
+void osabi(char *buf)
 {
 	char *table[19] = {
 		"UNIX - System V", "UNIX - HP-UX", "UNIX - NetBSD",
@@ -169,17 +163,17 @@ void osabi(char *buffer)
 		"HP - Non-Stop Kernel", "AROS", "FenixOS",
 		"Nuxi CloudABI", "Stratus Technologies OpenVOS"};
 	printf("  %-35s", "OS/ABI:");
-	if (buffer[EI_OSABI] < 19)
-		printf("%s\n", table[(unsigned int) buffer[EI_OSABI]]);
+	if (buf[EI_OSABI] < 19)
+		printf("%s\n", table[(unsigned int) buf[EI_OSABI]]);
 	else
-		printf("<unknown: %x>\n", buffer[EI_OSABI]);
+		printf("<unknown: %x>\n", buf[EI_OSABI]);
 }
 /**
  * type - print type
- * @buffer: ELF buffer
+ * @buf: ELF buffer
  * @endian: endianness
  */
-void type(char *buffer, int endian)
+void type(char *buf, int endian)
 {
 	int type;
 
@@ -194,9 +188,9 @@ void type(char *buffer, int endian)
 	printf("  %-35s", "Type:");
 
 	if (endian)
-		type = 256 * buffer[16] + buffer[17];
+		type = 256 * buf[16] + buf[17];
 	else
-		type = 256 * buffer[17] + buffer[16];
+		type = 256 * buf[17] + buf[16];
 
 	if (type < 5)
 		printf("%s\n", table[type]);
@@ -210,35 +204,35 @@ void type(char *buffer, int endian)
 
 /**
  * entry - entry point address
- * @buffer: string containing the entry point address
+ * @buf: string containing the entry point address
  * @mode: (32 or 64)
  * @end: endianness
  */
-void entry(char *buffer, int mode, int end)
+void entry(char *buf, int mode, int end)
 {
 	int size = mode / 8;
 
 	printf("  %-35s0x", "Entry point address:");
 	if (end)
 	{
-		while (size && !*(buffer))
+		while (size && !*(buf))
 		{
-			++buffer;
+			++buf;
 			--size;
 		}
-		printf("%x", *buffer & 0xff);
+		printf("%x", *buf & 0xff);
 
 		while (--size > 0)
-			printf("%02x", *(++buffer) & 0xff);
+			printf("%02x", *(++buf) & 0xff);
 	}
 	else
 	{
-		buffer += size;
-		while (size && !*(--buffer))
+		buf += size;
+		while (size && !*(--buf))
 			--size;
-		printf("%x", *buffer & 0xff);
+		printf("%x", *buf & 0xff);
 		while (--size > 0)
-			printf("%02x", *(--buffer) & 0xff);
+			printf("%02x", *(--buf) & 0xff);
 	}
 	printf("\n");
 }
