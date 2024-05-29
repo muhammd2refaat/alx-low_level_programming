@@ -1,2 +1,7 @@
-all : main.c school.c
+
+# Default rule
+all: school
+
+# Rule to build the executable
+school:
 	gcc main.c school.c -o school
