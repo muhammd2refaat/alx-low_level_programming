@@ -1,5 +1,9 @@
 #!/usr/bin/python3
 
+"""
+5-island_perimeter - returns the perimeter of the island in grid
+"""
+
 def island_perimeter(grid):
     """returns the perimeter of the island"""
     perimeter = 0
