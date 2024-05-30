@@ -4,18 +4,26 @@
 5-island_perimeter - returns the perimeter of the island in grid
 """
 
-def island_perimeter(grid):
-    """returns the perimeter of the island"""
-    perimeter = 0
-    for i in range(len(grid)):
-        for j in range(len(grid[i])):
-            if grid[i][j] == 1:
-                if j == 0 or grid[i][j - 1] == 0:
-                    perimeter += 1
-                if j == len(grid[i]) - 1 or grid[i][j + 1] == 0:
-                    perimeter += 1
-                if i == 0 or grid[i - 1][j] == 0:
-                    perimeter += 1
-                if i == len(grid) - 1 or grid[i + 1][j] == 0:
-                    perimeter += 1
-    return perimeter
+def island_perimeter(island_grid):
+    """
+    Calculates the perimeter of an island
+    """
+
+    # Initialize variables to track island borders and island_size
+    island_border_count = 0
+    island_size = 0
+
+    # Iterate over each cell in the island island_grid
+    for row in range(len(island_grid)):
+        for col in range(len(island_grid[0])):
+            # Check if the current cell is part of an island
+            if island_grid[row][col] == 1:
+                island_size += 1
+                if (col > 0 and island_grid[row][col - 1] == 1):
+                    island_border_count += 1
+                if (row > 0 and island_grid[row - 1][col] == 1):
+                    island_border_count += 1
+
+    # Calculate the perimeter of the island
+    result = island_size * 4 - island_border_count * 2
+    return result
