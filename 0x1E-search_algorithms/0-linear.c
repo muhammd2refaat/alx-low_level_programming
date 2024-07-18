@@ -13,7 +13,7 @@
  * Description:
  * Traverse the array and compare each element to the target
  * --------------------------
- * Authors: Muhammed Refaat
+ * By Muhammed Refaat
  */
 
 int linear_search(int *arr, size_t n, int target)
